@@ -270,6 +270,72 @@ class Sprout_Invoices_Extensions_Admin {
 	}
 
 	/**
+	 * Add the client field to the meta box in the admin
+	 *
+	 * @param array $fields
+	 *
+	 * @return array
+	 */
+	public function client_fields( $fields = array() ) {
+		$client_id = get_the_ID();
+		if ( SI_Client::POST_TYPE !== get_post_type( $client_id ) ) {
+			return $fields;
+		}
+		$client = SI_Client::get_instance( $client_id );
+		$fields['vat_number'] = array(
+			'weight' => 117,
+			'label' => __( 'VAT Number', 'sprout-invoices-extensions' ),
+			'type' => 'text',
+			'required' => false,
+			'default' => ( $client ) ? $client->get_post_meta( '_vat_number' ) : '',
+			'placeholder' => '',
+		);
+		return $fields;
+	}
+
+	/**
+	 * Save the custom fields
+	 *
+	 * @param array $data
+	 * @param array $post
+	 *
+	 * @return array
+	 */
+	public function save_fields( $data = array(), $post = array() ) {
+		if ( $post['post_type'] !== SI_Client::POST_TYPE ) {
+			return $data;
+		}
+		$vat_number = '';
+		if ( isset( $_POST['sa_metabox_vat_number'] ) ) {
+			$vat_number = $_POST['sa_metabox_vat_number'];
+		}
+		$client = SI_Client::get_instance( $post['ID'] );
+		if ( ! is_a( $client, 'SI_Client' ) ) {
+			return $data;
+		}
+		$client->save_post_meta( array( '_vat_number' => $vat_number ) );
+		return $data;
+	}
+
+	/**
+	 * Add the custom fields to the template.
+	 */
+	public function add_custom_fields_to_docs() {
+		$client_id = 0;
+		$doc_id = get_the_id();
+		if ( get_post_type( $doc_id ) == SI_Invoice::POST_TYPE ) {
+			$client_id = si_get_invoice_client_id();
+		}
+		if ( get_post_type( $doc_id ) == SI_Estimate::POST_TYPE ) {
+			$client_id = si_get_estimate_client_id();
+		}
+		if ( $client_id ) {
+			$client = SI_Client::get_instance( $client_id );
+			printf( __( '<dl class="client_addy"><dt><span class="dt_heading">VAT Number</span></dt><dd>%s</dd></dl>', 'sprout-invoices-extensions' ), $client->get_post_meta( '_vat_number' ) );
+		}
+	}
+
+	/**
 	 * Change meta box defaults.
 	 *
 	 * @param array $args An array of meta box parameters.
