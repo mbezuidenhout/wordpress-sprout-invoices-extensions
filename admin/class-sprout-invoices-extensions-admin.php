@@ -230,6 +230,46 @@ class Sprout_Invoices_Extensions_Admin {
 	}
 
 	/**
+	 * Add the South African provinces in the array.
+	 *
+	 * @param array $states List of states grouped by country.
+	 *
+	 * @return array
+	 */
+	public function state_options( $states ) {
+		$states['South Africa'] = array(
+			'EC'  => 'Eastern Cape',
+			'FS'  => 'Free State',
+			'GP'  => 'Gauteng',
+			'KZN' => 'KwaZulu-Natal',
+			'LP'  => 'Limpopo',
+			'MP'  => 'Mpumalanga',
+			'NC'  => 'Northern Cape',
+			'NW'  => 'North West',
+			'WC'  => 'Western Cape',
+		);
+		return $states;
+	}
+
+	/**
+	 * Alters the settings fields.
+	 *
+	 * @param string $html HTML string defining the form field.
+	 * @param array $field An associative array of settings.
+	 *
+	 * @return string
+	 */
+	public function settings_input_field( $html, $field ) {
+		if ( 'State' === $field['label'] ) {
+			$html = str_replace( '>State</label>', '>State/Province</label>', $html );
+		}
+		if ( 'ZIP Code' === $field['label'] ) {
+			$html = str_replace( '>ZIP Code</label>', '>Zip/Postal Code</label>', $html );
+		}
+		return $html;
+	}
+
+	/**
 	 * Change meta box defaults.
 	 *
 	 * @param array $args An array of meta box parameters.

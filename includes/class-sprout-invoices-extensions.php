@@ -161,6 +161,8 @@ class Sprout_Invoices_Extensions {
 
 		$this->loader->add_filter( 'load_view_args_admin/meta-boxes/invoices/information.php', $plugin_admin, 'information_meta_box_args' );
 		$this->loader->add_filter( 'load_view_args_admin/meta-boxes/estimates/information.php', $plugin_admin, 'information_meta_box_args' );
+		$this->loader->add_filter( 'sprout_state_options', $plugin_admin, 'state_options' );
+		$this->loader->add_filter( 'si_admin_settings_input_field', $plugin_admin, 'settings_input_field', 10, 2 );
 	}
 
 	/**
