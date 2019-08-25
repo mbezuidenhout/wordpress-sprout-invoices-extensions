@@ -373,4 +373,15 @@ class Sprout_Invoices_Extensions_Admin {
 		return $args;
 	}
 
+	/**
+	 * Change text displayed in the left footer column.
+	 *
+	 * @param string $text The text in the left footer.
+	 *
+	 * @return string
+	 */
+	public function admin_footer_text( $text ) {
+		return '';
+	}
+
 }
