@@ -318,6 +318,29 @@ class Sprout_Invoices_Extensions_Admin {
 	}
 
 	/**
+	 * Change the translation for some strings.
+	 *
+	 * @param string $translations The translated string.
+	 * @param string $text   The original string.
+	 * @param string $domain The translation domain.
+	 */
+	public function change_strings( $translations, $text, $domain ) {
+		$locale = get_locale();
+		if ( 'sprout-invoices' === $domain && 0 === strpos( $locale, 'en' ) ) {
+			switch( $text ) {
+				case 'PO #':
+				case 'PO Number':
+					$translations = 'Date of Event';
+					break;
+				case 'Used to display the estimate po number.':
+					$translations = 'Used to display the event date.';
+					break;
+			}
+		}
+		return $translations;
+	}
+
+	/**
 	 * Add the custom fields to the template.
 	 */
 	public function add_custom_fields_to_docs() {

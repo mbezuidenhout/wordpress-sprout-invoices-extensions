@@ -165,6 +165,7 @@ class Sprout_Invoices_Extensions {
 		$this->loader->add_filter( 'si_admin_settings_input_field', $plugin_admin, 'settings_input_field', 10, 2 );
 		$this->loader->add_filter( 'si_client_form_fields', $plugin_admin, 'client_fields' );
 		$this->loader->add_filter( 'wp_insert_post_data', $plugin_admin, 'save_fields', 100, 2 );
+		$this->loader->add_filter( 'gettext', $plugin_admin, 'change_strings', 10, 3 );
 		$this->loader->add_action( 'si_document_vcards', $plugin_admin, 'add_custom_fields_to_docs' );
 	}
 
