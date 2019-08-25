@@ -323,6 +323,8 @@ class Sprout_Invoices_Extensions_Admin {
 	 * @param string $translations The translated string.
 	 * @param string $text   The original string.
 	 * @param string $domain The translation domain.
+	 *
+	 * @return string
 	 */
 	public function change_strings( $translations, $text, $domain ) {
 		$locale = get_locale();
@@ -336,8 +338,38 @@ class Sprout_Invoices_Extensions_Admin {
 					$translations = 'Used to display the event date.';
 					break;
 			}
+			$translations = str_replace( 'Estimate', 'Quote', $translations );
+			$translations = str_replace( 'estimate', 'quote', $translations );
 		}
 		return $translations;
+	}
+
+	/**
+	 * Change labels for the custom post type.
+	 *
+	 * @param array $args Array of arguments for the custom post type.
+	 *
+	 * @return array
+	 */
+	public function change_post_type_name_for_estimates( $args ) {
+		$new_args = array(
+			'label' => 'Quotes',
+			'labels' => array(
+				'name' => 'Quotes',
+				'singular_name' => 'Quote',
+				'search_items' => 'Search Quotes',
+				'popular_items' => 'Popular Quotes',
+				'all_items' => 'All Quotes',
+				'parent_item' => 'Parent Quote',
+				'parent_item_colon' => 'Parent Quote:',
+				'edit_item' => 'Edit Quote',
+				'update_item' => 'Update Quote',
+				'add_new_item' => 'Add New Quote',
+				'new_item_name' => 'New Quote Name',
+				'menu_name' => 'Quotes',
+			),
+		);
+		return array_merge( $args, $new_args );
 	}
 
 	/**
