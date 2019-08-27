@@ -112,7 +112,7 @@ class Sprout_Invoices_Extensions_Admin {
 			'catering'     => __( 'Catering', 'sprout-invoices-extensions' ),
 			'staff'        => __( 'Staff', 'sprout-invoices-extensions' ),
 			'technical'    => __( 'Technical', 'sprout-invoices-extensions' ),
-			'toc_approval' => __( 'TOC Approval', 'sprout-invoices-extensions' ),
+			'joc_approval' => __( 'JOC Approval', 'sprout-invoices-extensions' ),
 			'security'     => __( 'Security', 'sprout-invoices-extensions' ),
 			'paramedics'   => __( 'Paramedics', 'sprout-invoices-extensions' ),
 			'bar'          => __( 'Bar', 'sprout-invoices-extensions' ),
@@ -206,8 +206,8 @@ class Sprout_Invoices_Extensions_Admin {
 			case 'technical':
 				$columns['desc']['label'] = __( 'Technical', 'sprout-invoices' );
 				break;
-			case 'toc_approval':
-				$columns['desc']['label'] = __( 'TOC Approval', 'sprout-invoices' );
+			case 'joc_approval':
+				$columns['desc']['label'] = __( 'JOC Approval', 'sprout-invoices' );
 				break;
 			case 'security':
 				$columns['desc']['label'] = __( 'Security', 'sprout-invoices' );
@@ -337,6 +337,9 @@ class Sprout_Invoices_Extensions_Admin {
 				case 'Used to display the estimate po number.':
 					$translations = 'Used to display the event date.';
 					break;
+				//case 'Invoice #': // TODO: Check that this only happens on the quotes page.
+				//	$translations = 'Quote #';
+				//	break;
 			}
 			$translations = str_replace( 'Estimate', 'Quote', $translations );
 			$translations = str_replace( 'estimate', 'quote', $translations );
