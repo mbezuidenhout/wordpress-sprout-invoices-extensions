@@ -328,7 +328,7 @@ class Sprout_Invoices_Extensions_Admin {
 	 */
 	public function change_strings( $translations, $text, $domain ) {
 		$locale = get_locale();
-		if ( 'sprout-invoices' === $domain && 0 === strpos( $locale, 'en' ) ) {
+		if ( 'sprout-invoices' === $domain || 'sprout-invoices-extensions' === $domain && 0 === strpos( $locale, 'en' ) ) {
 			switch( $text ) {
 				case 'PO #':
 				case 'PO Number':
@@ -373,6 +373,83 @@ class Sprout_Invoices_Extensions_Admin {
 	}
 
 	/**
+	 * Add built-in plugins to the tinymce editor.
+	 *
+	 * @param array $plugins An array of plugin names.
+	 *
+	 * @return array
+	 */
+	public function tiny_mce_plugins( $plugins ) {
+		$plugins['template'] = plugin_dir_url( __FILE__ ) . 'js/tinymce/plugins/template/plugin.min.js';
+		return $plugins;
+	}
+
+	/**
+	 * Filters the list of buttons shown to the user.
+	 *
+	 * @param array  $mce_buttons An array of buttons
+	 * @param string $editor_id   The tinymce editor id specified in the wp_editor call
+	 *
+	 * @return array
+	 */
+	public function tiny_mce_buttons( $mce_buttons, $editor_id ) {
+		if ( 'estimate_terms' === $editor_id ) {
+			$mce_buttons[] = 'template';
+		}
+		return $mce_buttons;
+	}
+
+	public function tiny_mce_settings( $settings, $editor_id ) {
+		if ( 'estimate_terms' === $editor_id ) {
+			$settings['templates'] = admin_url( 'admin-ajax.php?action=si_estimate_terms' );
+		}
+		return $settings;
+	}
+
+	/**
+	 * Return an array of terms
+	 */
+	public function json_estimate_terms() {
+		$args = array(
+			'numberposts' => -1,
+			'orderby'     => 'title',
+			'order'       => 'ASC',
+			'post_type'   => 'estimate_terms',
+		);
+		$estimate_terms = get_posts( $args );
+
+		$terms = array();
+
+		foreach ( $estimate_terms as $post ) {
+			$terms[] = array(
+				'title'   => $post->post_title,
+				'content' => $post->post_content,
+			);
+		}
+		wp_send_json( $terms );
+	}
+
+	/**
+	 * Add submenu pages.
+	 */
+	public function register_menu_pages() {
+		add_submenu_page(
+			'edit.php?post_type=sa_estimate',
+			__( 'Terms', 'sprout-invoices-extensions' ),
+			__( 'Terms', 'sprout-invoices-extensions' ),
+			'manage_options',
+			'edit.php?post_type=estimate_terms'
+		);
+	}
+
+	/**
+	 * Display a page where the user change manage terms as shown on estimates.
+	 */
+	public function manage_estimate_terms_page() {
+
+	}
+
+	/**
 	 * Add the custom fields to the template.
 	 */
 	public function add_custom_fields_to_docs() {
@@ -414,6 +491,64 @@ class Sprout_Invoices_Extensions_Admin {
 	 */
 	public function admin_footer_text( $text ) {
 		return '';
+	}
+
+	/**
+	 * Add the estimate terms meta boxes.
+	 *
+	 * @param WP_Post $post The post object.
+	 * @link https://codex.wordpress.org/Plugin_API/Action_Reference/add_meta_boxes
+	 */
+	public function add_meta_boxes( $post ) {
+		add_meta_box( 'estimatetermsdiv', __( 'Terms', 'sprout-invoices-extensions' ), array( $this, 'meta_box_estimate_terms' ), 'estimate_terms', 'normal' );
+	}
+
+	/**
+	 * Display the content of the terms meta box.
+	 *
+	 * @param WP_Post $post The post object.
+	 */
+	public function meta_box_estimate_terms( $post ) {
+		wp_nonce_field( 'meta-box-estimate-terms', '_wpnonce_estimate_terms' );
+		$settings = array(
+			'media_buttons' => false,
+			'textarea_rows' => 4,
+			'theme_styles'  => false,
+		);
+		add_filter( 'mce_css', '__return_null' );
+		wp_editor( $post->post_content, 'estimate-terms', $settings );
+		remove_filter( 'mce_css', '__return_null' );
+	}
+
+	/**
+	 * Saving of meta boxes for the custom post type quote.
+	 *
+	 * @param int     $post_ID Post ID.
+	 * @param WP_Post $post    Post object.
+	 * @param bool    $update  Whether this is an existing post being updated or not.
+	 *
+	 * @return int
+	 */
+	public function save_estimate_terms_content( $post_ID, $post, $update ) {
+		if ( ! isset( $_REQUEST['_wpnonce_estimate_terms'] ) || ! wp_verify_nonce( wp_unslash( $_REQUEST['_wpnonce_estimate_terms'] ), 'meta-box-estimate-terms' ) ) {
+			return $post_ID;
+		}
+
+		// check autosave.
+		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+			return $post_ID;
+		}
+
+		if ( ! current_user_can( 'edit_post', $post_ID ) ) {
+			return $post_ID;
+		}
+
+		if ( wp_unslash( $_REQUEST['estimate-terms']!== $post->post_content ) ) {
+			$post->post_content = wp_unslash( $_REQUEST['estimate-terms'] );
+			wp_update_post( $post );
+		}
+
+		return $post_ID;
 	}
 
 }
