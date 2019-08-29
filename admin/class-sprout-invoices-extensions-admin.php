@@ -104,7 +104,11 @@ class Sprout_Invoices_Extensions_Admin {
 	/**
 	 * Add extra line item types for use in estimates.
 	 *
+	 * @param array $line_items An array of estimate line items.
+	 *
+	 * @return array
 	 * @since    1.0.0
+	 *
 	 */
 	public function add_line_items( $line_items ) {
 		$new_line_items = array(
@@ -126,26 +130,31 @@ class Sprout_Invoices_Extensions_Admin {
 	/**
 	 * Add naming for custom line items.
 	 *
-	 * @param array $columns An array of columns with parameters.
-	 * @param string $type The column type string
+	 * @param array  $columns An array of columns with parameters.
+	 * @param string $type The column type string.
 	 *
 	 * @return array
 	 *
 	 * @since    1.0.0
 	 */
 	public function line_item_columns( $columns, $type ) {
-		if ( in_array( $type, array(
-			'venue',
-			'catering',
-			'staff',
-			'technical',
-			'toc_approval',
-			'security',
-			'paramedics',
-			'bar',
-			'consumables',
-			'hiring'
-		) ) ) {
+		if (
+		in_array(
+			$type,
+			array(
+				'venue',
+				'catering',
+				'staff',
+				'technical',
+				'toc_approval',
+				'security',
+				'paramedics',
+				'bar',
+				'consumables',
+				'hiring',
+			),
+			true
+		) ) {
 			$columns = array(
 				'desc'  => array(
 					'label'          => __( 'Product', 'sprout-invoices' ),
@@ -255,7 +264,7 @@ class Sprout_Invoices_Extensions_Admin {
 	 * Alters the settings fields.
 	 *
 	 * @param string $html HTML string defining the form field.
-	 * @param array $field An associative array of settings.
+	 * @param array  $field An associative array of settings.
 	 *
 	 * @return string
 	 */
@@ -272,7 +281,7 @@ class Sprout_Invoices_Extensions_Admin {
 	/**
 	 * Add the client field to the meta box in the admin
 	 *
-	 * @param array $fields
+	 * @param array $fields List of fields for clients.
 	 *
 	 * @return array
 	 */
@@ -281,13 +290,13 @@ class Sprout_Invoices_Extensions_Admin {
 		if ( SI_Client::POST_TYPE !== get_post_type( $client_id ) ) {
 			return $fields;
 		}
-		$client = SI_Client::get_instance( $client_id );
+		$client               = SI_Client::get_instance( $client_id );
 		$fields['vat_number'] = array(
-			'weight' => 117,
-			'label' => __( 'VAT Number', 'sprout-invoices-extensions' ),
-			'type' => 'text',
-			'required' => false,
-			'default' => ( $client ) ? $client->get_post_meta( '_vat_number' ) : '',
+			'weight'      => 117,
+			'label'       => __( 'VAT Number', 'sprout-invoices-extensions' ),
+			'type'        => 'text',
+			'required'    => false,
+			'default'     => ( $client ) ? $client->get_post_meta( '_vat_number' ) : '',
 			'placeholder' => '',
 		);
 		return $fields;
@@ -296,8 +305,8 @@ class Sprout_Invoices_Extensions_Admin {
 	/**
 	 * Save the custom fields
 	 *
-	 * @param array $data
-	 * @param array $post
+	 * @param array $data Form data.
+	 * @param array $post Array of data for WP_Post.
 	 *
 	 * @return array
 	 */
@@ -307,7 +316,7 @@ class Sprout_Invoices_Extensions_Admin {
 		}
 		$vat_number = '';
 		if ( isset( $_POST['sa_metabox_vat_number'] ) ) {
-			$vat_number = $_POST['sa_metabox_vat_number'];
+			$vat_number = wp_unslash( $_POST['sa_metabox_vat_number'] );
 		}
 		$client = SI_Client::get_instance( $post['ID'] );
 		if ( ! is_a( $client, 'SI_Client' ) ) {
@@ -328,8 +337,8 @@ class Sprout_Invoices_Extensions_Admin {
 	 */
 	public function change_strings( $translations, $text, $domain ) {
 		$locale = get_locale();
-		if ( 'sprout-invoices' === $domain || 'sprout-invoices-extensions' === $domain && 0 === strpos( $locale, 'en' ) ) {
-			switch( $text ) {
+		if ( in_array( $domain, array( 'sprout-invoices', 'sprout-invoices-extensions' ), true ) && 0 === strpos( $locale, 'en' ) ) {
+			switch ( $text ) {
 				case 'PO #':
 				case 'PO Number':
 					$translations = 'Date of Event';
@@ -337,10 +346,14 @@ class Sprout_Invoices_Extensions_Admin {
 				case 'Used to display the estimate po number.':
 					$translations = 'Used to display the event date.';
 					break;
+				case 'ZIP Code':
+					$translations = 'Postal Code';
+					break;
 				//case 'Invoice #': // TODO: Check that this only happens on the quotes page.
 				//	$translations = 'Quote #';
 				//	break;
 			}
+			$translations = str_replace( 'State', 'State/Province', $translations );
 			$translations = str_replace( 'Estimate', 'Quote', $translations );
 			$translations = str_replace( 'estimate', 'quote', $translations );
 		}
