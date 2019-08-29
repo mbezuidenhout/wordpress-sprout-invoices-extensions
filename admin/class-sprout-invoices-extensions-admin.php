@@ -489,7 +489,9 @@ class Sprout_Invoices_Extensions_Admin {
 		}
 		if ( $client_id ) {
 			$client = SI_Client::get_instance( $client_id );
-			printf( __( '<dl class="client_addy"><dt><span class="dt_heading">VAT Number</span></dt><dd>%s</dd></dl>', 'sprout-invoices-extensions' ), $client->get_post_meta( '_vat_number' ) );
+			if ( ! empty ($client->get_post_meta( '_vat_number' ) )) {
+				printf( __( '<div class="company_info">VAT Number: %s</div>', 'sprout-invoices-extensions' ), $client->get_post_meta( '_vat_number' ) );
+			}
 		}
 	}
 

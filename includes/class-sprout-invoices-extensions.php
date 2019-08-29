@@ -167,7 +167,7 @@ class Sprout_Invoices_Extensions {
 		$this->loader->add_filter( 'wp_insert_post_data', $plugin_admin, 'save_fields', 100, 2 );
 		$this->loader->add_filter( 'gettext', $plugin_admin, 'change_strings', 10, 3 );
 		$this->loader->add_filter( 'si_register_post_type_args-sa_estimate', $plugin_admin, 'change_post_type_name_for_estimates' );
-		$this->loader->add_action( 'si_document_vcards', $plugin_admin, 'add_custom_fields_to_docs' );
+		$this->loader->add_action( 'si_document_client_addy', $plugin_admin, 'add_custom_fields_to_docs', 20 );
 		$this->loader->add_filter( 'admin_footer_text', $plugin_admin, 'admin_footer_text' );
 		$this->loader->add_filter( 'mce_external_plugins', $plugin_admin, 'tiny_mce_plugins' );
 		$this->loader->add_filter( 'mce_buttons_2', $plugin_admin, 'tiny_mce_buttons', 10, 2 );
