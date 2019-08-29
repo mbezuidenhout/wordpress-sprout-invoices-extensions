@@ -155,5 +155,4 @@ class Sprout_Invoices_Extensions_Public {
 		);
 
 	}
-	
 }
