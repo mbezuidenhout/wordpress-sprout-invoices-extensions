@@ -2,3 +2,7 @@
  * All of the CSS for your admin-specific functionality should be
  * included in this file.
  */
+
+#si_estimate_update div.misc-pub-section.update-total[data-edit-id="tax2"] {
+	display: none!important;
+}

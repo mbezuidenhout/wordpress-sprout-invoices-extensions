@@ -161,6 +161,23 @@ class Sprout_Invoices_Extensions {
 
 		$this->loader->add_filter( 'load_view_args_admin/meta-boxes/invoices/information.php', $plugin_admin, 'information_meta_box_args' );
 		$this->loader->add_filter( 'load_view_args_admin/meta-boxes/estimates/information.php', $plugin_admin, 'information_meta_box_args' );
+		$this->loader->add_filter( 'sprout_state_options', $plugin_admin, 'state_options' );
+		$this->loader->add_filter( 'si_admin_settings_input_field', $plugin_admin, 'settings_input_field', 10, 2 );
+		$this->loader->add_filter( 'si_client_form_fields', $plugin_admin, 'client_fields' );
+		$this->loader->add_filter( 'wp_insert_post_data', $plugin_admin, 'save_fields', 100, 2 );
+		$this->loader->add_filter( 'gettext', $plugin_admin, 'change_strings', 10, 3 );
+		$this->loader->add_filter( 'si_register_post_type_args-sa_estimate', $plugin_admin, 'change_post_type_name_for_estimates' );
+		$this->loader->add_action( 'si_document_vcards', $plugin_admin, 'add_custom_fields_to_docs' );
+		$this->loader->add_filter( 'admin_footer_text', $plugin_admin, 'admin_footer_text' );
+		$this->loader->add_filter( 'mce_external_plugins', $plugin_admin, 'tiny_mce_plugins' );
+		$this->loader->add_filter( 'mce_buttons_2', $plugin_admin, 'tiny_mce_buttons', 10, 2 );
+		$this->loader->add_filter( 'tiny_mce_before_init', $plugin_admin, 'tiny_mce_settings', 10, 2 );
+		$this->loader->add_action( 'wp_ajax_si_estimate_terms', $plugin_admin, 'json_estimate_terms' );
+		$this->loader->add_action( 'admin_menu', $plugin_admin, 'register_menu_pages' );
+
+		$post_type = 'estimate_terms';
+		$this->loader->add_action( "add_meta_boxes_{$post_type}", $plugin_admin, 'add_meta_boxes' );
+		$this->loader->add_action( "save_post_{$post_type}", $plugin_admin, 'save_estimate_terms_content', 10, 3 );
 	}
 
 	/**
@@ -176,6 +193,8 @@ class Sprout_Invoices_Extensions {
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
+
+		$this->loader->add_action( 'init', $plugin_public, 'create_post_type_estimate_terms' );
 
 	}
 
