@@ -6,3 +6,7 @@
 #si_estimate_update div.misc-pub-section.update-total[data-edit-id="tax2"] {
 	display: none!important;
 }
+
+#client_create_form span.label_wrap {
+    display: inherit;
+}
