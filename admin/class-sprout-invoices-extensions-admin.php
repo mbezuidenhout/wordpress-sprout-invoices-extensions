@@ -355,7 +355,9 @@ class Sprout_Invoices_Extensions_Admin {
 				//	$translations = 'Quote #';
 				//	break;
 			}
-			$translations = str_replace( 'State', 'State/Province', $translations );
+			if ( false === strstr( $translations, 'State/Province' ) ) {
+				$translations = str_replace( 'State', 'State/Province', $translations );
+			}
 			$translations = str_replace( 'Estimate', 'Quote', $translations );
 			$translations = str_replace( 'estimate', 'quote', $translations );
 		}
