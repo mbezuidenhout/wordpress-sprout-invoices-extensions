@@ -174,6 +174,7 @@ class Sprout_Invoices_Extensions {
 		$this->loader->add_filter( 'tiny_mce_before_init', $plugin_admin, 'tiny_mce_settings', 10, 2 );
 		$this->loader->add_action( 'wp_ajax_si_estimate_terms', $plugin_admin, 'json_estimate_terms' );
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'register_menu_pages' );
+		$this->loader->add_filter( 'si_get_default_line_item_type', $plugin_admin, 'default_line_item_type', 10, 2 );
 
 		$post_type = 'estimate_terms';
 		$this->loader->add_action( "add_meta_boxes_{$post_type}", $plugin_admin, 'add_meta_boxes' );
