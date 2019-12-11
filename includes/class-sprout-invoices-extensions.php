@@ -154,9 +154,9 @@ class Sprout_Invoices_Extensions {
 
 		$plugin_admin = new Sprout_Invoices_Extensions_Admin( $this->get_plugin_name(), $this->get_version() );
 
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles', 9 );
+		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
-		$this->loader->add_filter( 'si_line_item_types', $plugin_admin, 'add_line_item_types' );
+		$this->loader->add_filter( 'si_line_item_types', $plugin_admin, 'add_line_items' );
 		$this->loader->add_filter( 'si_line_item_columns', $plugin_admin, 'line_item_columns', 10, 6 );
 
 		$this->loader->add_filter( 'load_view_args_admin/meta-boxes/invoices/information.php', $plugin_admin, 'information_meta_box_args' );
@@ -167,14 +167,14 @@ class Sprout_Invoices_Extensions {
 		$this->loader->add_filter( 'wp_insert_post_data', $plugin_admin, 'save_fields', 100, 2 );
 		$this->loader->add_filter( 'gettext', $plugin_admin, 'change_strings', 10, 3 );
 		$this->loader->add_filter( 'si_register_post_type_args-sa_estimate', $plugin_admin, 'change_post_type_name_for_estimates' );
-		$this->loader->add_action( 'si_document_vcards', $plugin_admin, 'add_custom_fields_to_docs' );
+		$this->loader->add_action( 'si_document_client_addy', $plugin_admin, 'add_custom_fields_to_docs' );
 		$this->loader->add_filter( 'admin_footer_text', $plugin_admin, 'admin_footer_text' );
 		$this->loader->add_filter( 'mce_external_plugins', $plugin_admin, 'tiny_mce_plugins' );
 		$this->loader->add_filter( 'mce_buttons_2', $plugin_admin, 'tiny_mce_buttons', 10, 2 );
 		$this->loader->add_filter( 'tiny_mce_before_init', $plugin_admin, 'tiny_mce_settings', 10, 2 );
 		$this->loader->add_action( 'wp_ajax_si_estimate_terms', $plugin_admin, 'json_estimate_terms' );
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'register_menu_pages' );
-		$this->loader->add_filter( 'si_get_default_line_item_type', $plugin_admin, 'default_line_item_type', 10, 2 );
+		$this->loader->add_filter( 'si_filter_zerod_decimals', $plugin_admin, 'si_filter_zerod_decimals' );
 
 		$post_type = 'estimate_terms';
 		$this->loader->add_action( "add_meta_boxes_{$post_type}", $plugin_admin, 'add_meta_boxes' );

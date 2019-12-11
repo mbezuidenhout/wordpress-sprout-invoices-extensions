@@ -1,5 +1,4 @@
 <?php
-
 /**
  * The admin-specific functionality of the plugin.
  *
@@ -133,8 +132,8 @@ class Sprout_Invoices_Extensions_Admin {
 	/**
 	 * Add naming for custom line items.
 	 *
-	 * @param array  $columns An array of columns with parameters.
-	 * @param string $type The column type string.
+	 * @param array $columns An array of columns with parameters.
+	 * @param string $type The column type string
 	 *
 	 * @return array
 	 *
@@ -175,7 +174,7 @@ class Sprout_Invoices_Extensions_Admin {
 				),
 				'rate'  => array(
 					'label'          => __( 'Price', 'sprout-invoices' ),
-					'type'           => 'input',
+					'type'           => 'small-input',
 					'calc'           => false,
 					'hide_if_parent' => true,
 					'weight'         => 10,
@@ -248,7 +247,7 @@ class Sprout_Invoices_Extensions_Admin {
 	 * @return array
 	 */
 	public function state_options( $states ) {
-		$states['South Africa'] = array(
+		$states['South Africa'] = [
 			'EC'  => 'Eastern Cape',
 			'FS'  => 'Free State',
 			'GP'  => 'Gauteng',
@@ -258,7 +257,7 @@ class Sprout_Invoices_Extensions_Admin {
 			'NC'  => 'Northern Cape',
 			'NW'  => 'North West',
 			'WC'  => 'Western Cape',
-		);
+		];
 		return $states;
 	}
 
@@ -266,7 +265,7 @@ class Sprout_Invoices_Extensions_Admin {
 	 * Alters the settings fields.
 	 *
 	 * @param string $html HTML string defining the form field.
-	 * @param array  $field An associative array of settings.
+	 * @param array $field An associative array of settings.
 	 *
 	 * @return string
 	 */
@@ -293,14 +292,14 @@ class Sprout_Invoices_Extensions_Admin {
 			return $fields;
 		}
 		$client               = SI_Client::get_instance( $client_id );
-		$fields['vat_number'] = array(
+		$fields['vat_number'] = [
 			'weight'      => 117,
 			'label'       => __( 'VAT Number', 'sprout-invoices-extensions' ),
 			'type'        => 'text',
 			'required'    => false,
 			'default'     => ( $client ) ? $client->get_post_meta( '_vat_number' ) : '',
 			'placeholder' => '',
-		);
+		];
 		return $fields;
 	}
 
@@ -312,19 +311,19 @@ class Sprout_Invoices_Extensions_Admin {
 	 *
 	 * @return array
 	 */
-	public function save_fields( $data = array(), $post = array() ) {
+	public function save_fields( $data = [], $post = [] ) {
 		if ( $post['post_type'] !== SI_Client::POST_TYPE ) {
 			return $data;
 		}
 		$vat_number = '';
 		if ( isset( $_POST['sa_metabox_vat_number'] ) ) {
-			$vat_number = wp_unslash( $_POST['sa_metabox_vat_number'] );
+			$vat_number = $_POST['sa_metabox_vat_number'];
 		}
 		$client = SI_Client::get_instance( $post['ID'] );
 		if ( ! is_a( $client, 'SI_Client' ) ) {
 			return $data;
 		}
-		$client->save_post_meta( array( '_vat_number' => $vat_number ) );
+		$client->save_post_meta( [ '_vat_number' => $vat_number ] );
 		return $data;
 	}
 
@@ -339,8 +338,8 @@ class Sprout_Invoices_Extensions_Admin {
 	 */
 	public function change_strings( $translations, $text, $domain ) {
 		$locale = get_locale();
-		if ( in_array( $domain, array( 'sprout-invoices', 'sprout-invoices-extensions' ), true ) && 0 === strpos( $locale, 'en' ) ) {
-			switch ( $text ) {
+		if ( 'sprout-invoices' === $domain || 'sprout-invoices-extensions' === $domain && 0 === strpos( $locale, 'en' ) ) {
+			switch( $text ) {
 				case 'PO #':
 				case 'PO Number':
 					$translations = 'Date of Event';
@@ -486,14 +485,12 @@ class Sprout_Invoices_Extensions_Admin {
 		if ( get_post_type( $doc_id ) === SI_Invoice::POST_TYPE ) {
 			$client_id = si_get_invoice_client_id();
 		}
-		if ( get_post_type( $doc_id ) === SI_Estimate::POST_TYPE ) {
+		if ( get_post_type( $doc_id ) == SI_Estimate::POST_TYPE ) {
 			$client_id = si_get_estimate_client_id();
 		}
 		if ( $client_id ) {
 			$client = SI_Client::get_instance( $client_id );
-			if ( ! empty ($client->get_post_meta( '_vat_number' ) )) {
-				printf( __( '<div class="company_info">VAT Number: %s</div>', 'sprout-invoices-extensions' ), $client->get_post_meta( '_vat_number' ) );
-			}
+			printf( __( '<div class="client_vat_number">%s: %s</div>', 'sprout-invoices-extensions' ), __('VAT Number'), $client->get_post_meta( '_vat_number' ) );
 		}
 	}
 
@@ -506,7 +503,7 @@ class Sprout_Invoices_Extensions_Admin {
 	 * @since    1.0.0
 	 */
 	public function information_meta_box_args( $args ) {
-		if ( 'auto-draft' === $args['post']->post_status ) { // only adjust drafts.
+		if ( 'auto-draft' == $args['post']->post_status ) { // only adjust drafts
 			$args['tax'] = 15;
 		}
 		return $args;
@@ -597,4 +594,10 @@ class Sprout_Invoices_Extensions_Admin {
 		}
 	}
 
+	/**
+	 * Allow decimal places to show.
+	 */
+	public function si_filter_zerod_decimals() {
+		return false;
+	}
 }
