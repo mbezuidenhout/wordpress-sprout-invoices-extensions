@@ -1,5 +1,4 @@
 <?php
-
 /**
  * The admin-specific functionality of the plugin.
  *
@@ -74,7 +73,7 @@ class Sprout_Invoices_Extensions_Admin {
 		 * class.
 		 */
 
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/sprout-invoices-extensions-admin.css', array(), $this->version, 'all' );
+		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/sprout-invoices-extensions-admin.css', [], $this->version, 'all' );
 
 	}
 
@@ -97,7 +96,7 @@ class Sprout_Invoices_Extensions_Admin {
 		 * class.
 		 */
 
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/sprout-invoices-extensions-admin.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/sprout-invoices-extensions-admin.js', [ 'jquery' ], $this->version, false );
 
 	}
 
@@ -107,7 +106,7 @@ class Sprout_Invoices_Extensions_Admin {
 	 * @since    1.0.0
 	 */
 	public function add_line_items( $line_items ) {
-		$new_line_items = array(
+		$new_line_items = [
 			'venue'        => __( 'Venue', 'sprout-invoices-extensions' ),
 			'catering'     => __( 'Catering', 'sprout-invoices-extensions' ),
 			'staff'        => __( 'Staff', 'sprout-invoices-extensions' ),
@@ -118,7 +117,7 @@ class Sprout_Invoices_Extensions_Admin {
 			'bar'          => __( 'Bar', 'sprout-invoices-extensions' ),
 			'consumables'  => __( 'Consumables', 'sprout-invoices-extensions' ),
 			'hiring'       => __( 'Hiring', 'sprout-invoices-extensions' ),
-		);
+		];
 
 		return array_merge( $line_items, $new_line_items );
 	}
@@ -126,72 +125,76 @@ class Sprout_Invoices_Extensions_Admin {
 	/**
 	 * Add naming for custom line items.
 	 *
-	 * @param array $columns An array of columns with parameters.
-	 * @param string $type The column type string
+	 * @param array  $columns An array of columns with parameters.
+	 * @param string $type The column type string.
 	 *
 	 * @return array
 	 *
 	 * @since    1.0.0
 	 */
 	public function line_item_columns( $columns, $type ) {
-		if ( in_array( $type, array(
-			'venue',
-			'catering',
-			'staff',
-			'technical',
-			'toc_approval',
-			'security',
-			'paramedics',
-			'bar',
-			'consumables',
-			'hiring'
-		) ) ) {
-			$columns = array(
-				'desc'  => array(
+		if ( in_array(
+			$type,
+			[
+				'venue',
+				'catering',
+				'staff',
+				'technical',
+				'toc_approval',
+				'security',
+				'paramedics',
+				'bar',
+				'consumables',
+				'hiring',
+			],
+			true
+		) ) {
+			$columns = [
+				'desc'  => [
 					'label'          => __( 'Product', 'sprout-invoices' ),
 					'type'           => 'textarea',
 					'calc'           => false,
 					'hide_if_parent' => false,
 					'weight'         => 1,
-				),
-				'sku'   => array(
+				],
+				'sku'   => [
 					'label'          => __( 'SKU', 'sprout-invoices' ),
 					'type'           => 'input',
 					'calc'           => false,
 					'numeric'        => false,
 					'hide_if_parent' => true,
 					'weight'         => 5,
-				),
-				'rate'  => array(
+				],
+				'rate'  => [
 					'label'          => __( 'Price', 'sprout-invoices' ),
 					'type'           => 'small-input',
 					'calc'           => false,
 					'hide_if_parent' => true,
 					'weight'         => 10,
-				),
-				'qty'   => array(
+				],
+				'qty'   => [
 					'label'          => __( 'Qty', 'sprout-invoices' ),
 					'type'           => 'small-input',
 					'calc'           => true,
 					'hide_if_parent' => true,
 					'weight'         => 15,
-				),
-				'tax'   => array(
+				],
+				'tax'   => [
 					'label'          => sprintf( '&#37; <span class="helptip" title="%s"></span>', __( 'A percentage adjustment per line item, i.e. tax or discount', 'sprout-invoices' ) ),
 					'type'           => 'small-input',
 					'calc'           => false,
 					'hide_if_parent' => true,
 					'weight'         => 20,
-				),
-				'total' => array(
+				],
+				'total' => [
 					'label'          => __( 'Amount', 'sprout-invoices' ),
 					'type'           => 'total',
 					'placeholder'    => sa_get_formatted_money( 0 ),
 					'calc'           => true,
 					'hide_if_parent' => false,
 					'weight'         => 50,
-				),
-			);
+				],
+			];
 		}
 		switch ( $type ) {
 			case 'venue':
@@ -237,7 +240,7 @@ class Sprout_Invoices_Extensions_Admin {
 	 * @return array
 	 */
 	public function state_options( $states ) {
-		$states['South Africa'] = array(
+		$states['South Africa'] = [
 			'EC'  => 'Eastern Cape',
 			'FS'  => 'Free State',
 			'GP'  => 'Gauteng',
@@ -247,7 +250,7 @@ class Sprout_Invoices_Extensions_Admin {
 			'NC'  => 'Northern Cape',
 			'NW'  => 'North West',
 			'WC'  => 'Western Cape',
-		);
+		];
 		return $states;
 	}
 
@@ -255,7 +258,7 @@ class Sprout_Invoices_Extensions_Admin {
 	 * Alters the settings fields.
 	 *
 	 * @param string $html HTML string defining the form field.
-	 * @param array $field An associative array of settings.
+	 * @param array  $field An associative array of settings.
 	 *
 	 * @return string
 	 */
@@ -272,7 +275,7 @@ class Sprout_Invoices_Extensions_Admin {
 	/**
 	 * Add the client field to the meta box in the admin
 	 *
-	 * @param array $fields
+	 * @param array $fields List of client form fields.
 	 *
 	 * @return array
 	 */
@@ -281,15 +284,15 @@ class Sprout_Invoices_Extensions_Admin {
 		if ( SI_Client::POST_TYPE !== get_post_type( $client_id ) ) {
 			return $fields;
 		}
-		$client = SI_Client::get_instance( $client_id );
-		$fields['vat_number'] = array(
-			'weight' => 117,
-			'label' => __( 'VAT Number', 'sprout-invoices-extensions' ),
-			'type' => 'text',
-			'required' => false,
-			'default' => ( $client ) ? $client->get_post_meta( '_vat_number' ) : '',
+		$client               = SI_Client::get_instance( $client_id );
+		$fields['vat_number'] = [
+			'weight'      => 117,
+			'label'       => __( 'VAT Number', 'sprout-invoices-extensions' ),
+			'type'        => 'text',
+			'required'    => false,
+			'default'     => ( $client ) ? $client->get_post_meta( '_vat_number' ) : '',
 			'placeholder' => '',
-		);
+		];
 		return $fields;
 	}
 
@@ -297,11 +300,11 @@ class Sprout_Invoices_Extensions_Admin {
 	 * Save the custom fields
 	 *
 	 * @param array $data
-	 * @param array $post
+	 * @param array $post The post fields.
 	 *
 	 * @return array
 	 */
-	public function save_fields( $data = array(), $post = array() ) {
+	public function save_fields( $data = [], $post = [] ) {
 		if ( $post['post_type'] !== SI_Client::POST_TYPE ) {
 			return $data;
 		}
@@ -313,7 +316,7 @@ class Sprout_Invoices_Extensions_Admin {
 		if ( ! is_a( $client, 'SI_Client' ) ) {
 			return $data;
 		}
-		$client->save_post_meta( array( '_vat_number' => $vat_number ) );
+		$client->save_post_meta( [ '_vat_number' => $vat_number ] );
 		return $data;
 	}
 
@@ -355,23 +358,23 @@ class Sprout_Invoices_Extensions_Admin {
 	 * @return array
 	 */
 	public function change_post_type_name_for_estimates( $args ) {
-		$new_args = array(
-			'label' => 'Quotes',
-			'labels' => array(
-				'name' => 'Quotes',
-				'singular_name' => 'Quote',
-				'search_items' => 'Search Quotes',
-				'popular_items' => 'Popular Quotes',
-				'all_items' => 'All Quotes',
-				'parent_item' => 'Parent Quote',
+		$new_args = [
+			'label'  => 'Quotes',
+			'labels' => [
+				'name'              => 'Quotes',
+				'singular_name'     => 'Quote',
+				'search_items'      => 'Search Quotes',
+				'popular_items'     => 'Popular Quotes',
+				'all_items'         => 'All Quotes',
+				'parent_item'       => 'Parent Quote',
 				'parent_item_colon' => 'Parent Quote:',
-				'edit_item' => 'Edit Quote',
-				'update_item' => 'Update Quote',
-				'add_new_item' => 'Add New Quote',
-				'new_item_name' => 'New Quote Name',
-				'menu_name' => 'Quotes',
-			),
-		);
+				'edit_item'         => 'Edit Quote',
+				'update_item'       => 'Update Quote',
+				'add_new_item'      => 'Add New Quote',
+				'new_item_name'     => 'New Quote Name',
+				'menu_name'         => 'Quotes',
+			],
+		];
 		return array_merge( $args, $new_args );
 	}
 
@@ -390,8 +393,8 @@ class Sprout_Invoices_Extensions_Admin {
 	/**
 	 * Filters the list of buttons shown to the user.
 	 *
-	 * @param array  $mce_buttons An array of buttons
-	 * @param string $editor_id   The tinymce editor id specified in the wp_editor call
+	 * @param array  $mce_buttons An array of buttons.
+	 * @param string $editor_id   The tinymce editor id specified in the wp_editor call.
 	 *
 	 * @return array
 	 */
@@ -402,6 +405,14 @@ class Sprout_Invoices_Extensions_Admin {
 		return $mce_buttons;
 	}
 
+	/**
+	 * Add settings to the tinymce editor.
+	 *
+	 * @param array  $settings  List of tinymce editor settings.
+	 * @param string $editor_id The tinymce editor ID.
+	 *
+	 * @return mixed array
+	 */
 	public function tiny_mce_settings( $settings, $editor_id ) {
 		if ( 'estimate_terms' === $editor_id ) {
 			$settings['templates'] = admin_url( 'admin-ajax.php?action=si_estimate_terms' );
@@ -413,21 +424,21 @@ class Sprout_Invoices_Extensions_Admin {
 	 * Return an array of terms
 	 */
 	public function json_estimate_terms() {
-		$args = array(
+		$args           = [
 			'numberposts' => -1,
 			'orderby'     => 'title',
 			'order'       => 'ASC',
 			'post_type'   => 'estimate_terms',
-		);
+		];
 		$estimate_terms = get_posts( $args );
 
-		$terms = array();
+		$terms = [];
 
 		foreach ( $estimate_terms as $post ) {
-			$terms[] = array(
+			$terms[] = [
 				'title'   => $post->post_title,
 				'content' => $post->post_content,
-			);
+			];
 		}
 		wp_send_json( $terms );
 	}
@@ -457,7 +468,7 @@ class Sprout_Invoices_Extensions_Admin {
 	 */
 	public function add_custom_fields_to_docs() {
 		$client_id = 0;
-		$doc_id = get_the_id();
+		$doc_id    = get_the_id();
 		if ( get_post_type( $doc_id ) == SI_Invoice::POST_TYPE ) {
 			$client_id = si_get_invoice_client_id();
 		}
@@ -503,7 +514,7 @@ class Sprout_Invoices_Extensions_Admin {
 	 * @link https://codex.wordpress.org/Plugin_API/Action_Reference/add_meta_boxes
 	 */
 	public function add_meta_boxes( $post ) {
-		add_meta_box( 'estimatetermsdiv', __( 'Terms', 'sprout-invoices-extensions' ), array( $this, 'meta_box_estimate_terms' ), 'estimate_terms', 'normal' );
+		add_meta_box( 'estimatetermsdiv', __( 'Terms', 'sprout-invoices-extensions' ), [ $this, 'meta_box_estimate_terms' ], 'estimate_terms', 'normal' );
 	}
 
 	/**
@@ -513,11 +524,11 @@ class Sprout_Invoices_Extensions_Admin {
 	 */
 	public function meta_box_estimate_terms( $post ) {
 		wp_nonce_field( 'meta-box-estimate-terms', '_wpnonce_estimate_terms' );
-		$settings = array(
+		$settings = [
 			'media_buttons' => false,
 			'textarea_rows' => 4,
 			'theme_styles'  => false,
-		);
+		];
 		add_filter( 'mce_css', '__return_null' );
 		wp_editor( $post->post_content, 'estimate-terms', $settings );
 		remove_filter( 'mce_css', '__return_null' );
@@ -554,4 +565,10 @@ class Sprout_Invoices_Extensions_Admin {
 		return $post_ID;
 	}
 
+	/**
+	 * Allow decimal places to show.
+	 */
+	public function si_filter_zerod_decimals() {
+		return false;
+	}
 }
