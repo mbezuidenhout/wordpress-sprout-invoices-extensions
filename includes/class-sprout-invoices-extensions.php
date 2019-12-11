@@ -1,5 +1,4 @@
 <?php
-
 /**
  * The file that defines the core plugin class
  *
@@ -154,9 +153,9 @@ class Sprout_Invoices_Extensions {
 
 		$plugin_admin = new Sprout_Invoices_Extensions_Admin( $this->get_plugin_name(), $this->get_version() );
 
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
+		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles', 9 );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
-		$this->loader->add_filter( 'si_line_item_types', $plugin_admin, 'add_line_items' );
+		$this->loader->add_filter( 'si_line_item_types', $plugin_admin, 'add_line_item_types' );
 		$this->loader->add_filter( 'si_line_item_columns', $plugin_admin, 'line_item_columns', 10, 6 );
 
 		$this->loader->add_filter( 'load_view_args_admin/meta-boxes/invoices/information.php', $plugin_admin, 'information_meta_box_args' );
@@ -174,6 +173,7 @@ class Sprout_Invoices_Extensions {
 		$this->loader->add_filter( 'tiny_mce_before_init', $plugin_admin, 'tiny_mce_settings', 10, 2 );
 		$this->loader->add_action( 'wp_ajax_si_estimate_terms', $plugin_admin, 'json_estimate_terms' );
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'register_menu_pages' );
+		$this->loader->add_filter( 'si_get_default_line_item_type', $plugin_admin, 'default_line_item_type', 10, 2 );
 		$this->loader->add_filter( 'si_filter_zerod_decimals', $plugin_admin, 'si_filter_zerod_decimals' );
 
 		$post_type = 'estimate_terms';

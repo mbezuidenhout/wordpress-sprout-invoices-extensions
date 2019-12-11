@@ -132,8 +132,8 @@ class Sprout_Invoices_Extensions_Admin {
 	/**
 	 * Add naming for custom line items.
 	 *
-	 * @param array $columns An array of columns with parameters.
-	 * @param string $type The column type string
+	 * @param array  $columns An array of columns with parameters.
+	 * @param string $type The column type string.
 	 *
 	 * @return array
 	 *
@@ -265,7 +265,7 @@ class Sprout_Invoices_Extensions_Admin {
 	 * Alters the settings fields.
 	 *
 	 * @param string $html HTML string defining the form field.
-	 * @param array $field An associative array of settings.
+	 * @param array  $field An associative array of settings.
 	 *
 	 * @return string
 	 */
@@ -317,7 +317,7 @@ class Sprout_Invoices_Extensions_Admin {
 		}
 		$vat_number = '';
 		if ( isset( $_POST['sa_metabox_vat_number'] ) ) {
-			$vat_number = $_POST['sa_metabox_vat_number'];
+			$vat_number = wp_unslash( $_POST['sa_metabox_vat_number'] );
 		}
 		$client = SI_Client::get_instance( $post['ID'] );
 		if ( ! is_a( $client, 'SI_Client' ) ) {
@@ -338,8 +338,8 @@ class Sprout_Invoices_Extensions_Admin {
 	 */
 	public function change_strings( $translations, $text, $domain ) {
 		$locale = get_locale();
-		if ( 'sprout-invoices' === $domain || 'sprout-invoices-extensions' === $domain && 0 === strpos( $locale, 'en' ) ) {
-			switch( $text ) {
+		if ( in_array( $domain, array( 'sprout-invoices', 'sprout-invoices-extensions' ), true ) && 0 === strpos( $locale, 'en' ) ) {
+			switch ( $text ) {
 				case 'PO #':
 				case 'PO Number':
 					$translations = 'Date of Event';
@@ -485,12 +485,14 @@ class Sprout_Invoices_Extensions_Admin {
 		if ( get_post_type( $doc_id ) === SI_Invoice::POST_TYPE ) {
 			$client_id = si_get_invoice_client_id();
 		}
-		if ( get_post_type( $doc_id ) == SI_Estimate::POST_TYPE ) {
+		if ( get_post_type( $doc_id ) === SI_Estimate::POST_TYPE ) {
 			$client_id = si_get_estimate_client_id();
 		}
 		if ( $client_id ) {
 			$client = SI_Client::get_instance( $client_id );
-			printf( __( '<div class="client_vat_number">%s: %s</div>', 'sprout-invoices-extensions' ), __('VAT Number'), $client->get_post_meta( '_vat_number' ) );
+			if ( ! empty ($client->get_post_meta( '_vat_number' ) )) {
+				printf( __( '<div class="company_info">VAT Number: %s</div>', 'sprout-invoices-extensions' ), $client->get_post_meta( '_vat_number' ) );
+			}
 		}
 	}
 
