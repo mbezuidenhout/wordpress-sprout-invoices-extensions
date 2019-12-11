@@ -490,7 +490,7 @@ class Sprout_Invoices_Extensions_Admin {
 		}
 		if ( $client_id ) {
 			$client = SI_Client::get_instance( $client_id );
-			if ( ! empty ($client->get_post_meta( '_vat_number' ) )) {
+			if ( ! empty( $client->get_post_meta( '_vat_number' ) ) ) {
 				printf( __( '<div class="company_info">VAT Number: %s</div>', 'sprout-invoices-extensions' ), $client->get_post_meta( '_vat_number' ) );
 			}
 		}
@@ -505,7 +505,7 @@ class Sprout_Invoices_Extensions_Admin {
 	 * @since    1.0.0
 	 */
 	public function information_meta_box_args( $args ) {
-		if ( 'auto-draft' == $args['post']->post_status ) { // only adjust drafts
+		if ( 'auto-draft' === $args['post']->post_status ) { // only adjust drafts
 			$args['tax'] = 15;
 		}
 		return $args;
@@ -572,7 +572,7 @@ class Sprout_Invoices_Extensions_Admin {
 			return $post_ID;
 		}
 
-		if ( wp_unslash( $_REQUEST['estimate-terms']!== $post->post_content ) ) {
+		if ( isset( $_REQUEST['estimate-terms'] ) && wp_unslash( $_REQUEST['estimate-terms'] !== $post->post_content ) ) {
 			$post->post_content = wp_unslash( $_REQUEST['estimate-terms'] );
 			wp_update_post( $post );
 		}
@@ -598,6 +598,8 @@ class Sprout_Invoices_Extensions_Admin {
 
 	/**
 	 * Allow decimal places to show.
+	 *
+	 * @since    1.0.1
 	 */
 	public function si_filter_zerod_decimals() {
 		return false;
